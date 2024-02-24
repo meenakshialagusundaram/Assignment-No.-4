@@ -17,8 +17,42 @@ Quarto enables you to weave together content and executable code into a finished
 
 When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
 
+\[Data Source\] (<https://dataverse.unc.edu/dataset.xhtml?persistentId=doi:10.15139/S3/LW9D7D>)
+
+# Visualization No. 1
+
 ```{r}
-1 + 1
+library(haven)
+library(tidyverse)
+
+data <- 
+  read_dta("/Users/meenakshialagusundaram/Assignment-No.-4/dataverse_files/replicate_rbindiaschools_state.dta")
+
+data %>%
+  filter(ac_year == 2014,
+         statename == "Goa",
+         engmed == 1) %>% 
+  ggplot(aes(x = pc_femtch, 
+             y = pcg_p60g8,
+             color = as.factor(ruralsch)))+
+  geom_point(na.rm = TRUE) +
+  geom_smooth(method = "lm",
+              se = FALSE)
+
+data %>%
+  filter(ac_year == 2014) %>% 
+  mutate(poor = ifelse(povertyrate > mean(povertyrate), 1, 0)) %>%
+  summarize(mean_bjp = mean(bjpvotes_pc_2014ge),
+            poor = mean(poor),
+            .by = statecd) %>% 
+  ggplot(aes(x = reorder(statecd, mean_bjp), y = mean_bjp, fill = as.factor(poor))) +
+  geom_bar(stat = "identity", 
+           na.rm = TRUE) +
+  theme_bw()
+  
+
+
+
 ```
 
 You can add options to executable code like this
