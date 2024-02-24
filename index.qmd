@@ -26,7 +26,7 @@ library(haven)
 library(tidyverse)
 
 data <- 
-  read_dta("/Users/meenakshialagusundaram/Assignment-No.-4/dataverse_files/replicate_rbindiaschools_state.dta")
+  read_dta("C:/Users/sanya/Documents/Assignment-No.-4/dataverse_files/replicate_rbindiaschools_state.dta")
 
 data %>%
   filter(ac_year == 2014,
@@ -49,7 +49,35 @@ data %>%
   geom_bar(stat = "identity", 
            na.rm = TRUE) +
   theme_bw()
-  
+
+library(ggplot2)
+library(dplyr)
+
+state_summary_2014<-data %>%
+  filter(ac_year == 2014) %>%
+  group_by(statecd) %>%
+  summarize(mean_povertyrate = mean(povertyrate, na.rm = TRUE),
+            mean_overallliteracyrate = mean(overallliteracyrate, na.rm = TRUE)) %>%
+  ungroup()  
+
+state_summary_2014$statecd <- as.factor(state_summary_2014$statecd) # Ensure statecd is treated as a factor
+
+#Plotting effects of poverty rate on economic outcomes 
+ggplot(state_summary_2014, aes(x = mean_povertyrate, y = mean_overallliteracyrate, color = statecd)) +
+  geom_point(size = 3) + # Adds points for each data point
+  scale_color_viridis_d(guide = guide_legend(override.aes = list(size = 5))) + # Uses a color scale for states
+  labs(title = "State Socio-Economic Status vs. Education Outcomes (2014)",
+       subtitle = "Mean Poverty Rate vs. Mean Overall Literacy Rate by State",
+       x = "Mean Poverty Rate", y = "Mean Overall Literacy Rate",
+       color = "State Code") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        plot.title = element_text(size = 14, face = "bold"),
+        plot.subtitle = element_text(size = 12),
+        legend.position = "bottom")
+
+
+
 
 
 
