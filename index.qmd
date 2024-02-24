@@ -53,6 +53,7 @@ data %>%
 library(ggplot2)
 library(dplyr)
 
+#Filtering data for the year 2014 and taking mean of poverty rate and literacy rate for all states 
 state_summary_2014<-data %>%
   filter(ac_year == 2014) %>%
   group_by(statecd) %>%
