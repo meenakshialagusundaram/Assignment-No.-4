@@ -77,8 +77,31 @@ ggplot(state_summary_2014, aes(x = mean_povertyrate, y = mean_overallliteracyrat
         plot.subtitle = element_text(size = 12),
         legend.position = "bottom")
 
+#Comparing poverty effect on female labor force participation in most rural vs most urban state in India through 2014-2017 
+library(ggplot2)
+library(dplyr)
 
+state_year_summary <- data %>%
+  filter(statename %in% c("Bihar", "Kerala")) %>%
+  group_by(statename, ac_year) %>%
+  summarize(mean_femalelfpr = mean(femalelfpr, na.rm = TRUE)) %>%
+  ungroup()
 
+state_year_summary$statecd <- as.factor(state_year_summary$statecd)
+
+ggplot(state_year_summary, aes(x = ac_year, y = mean_femalelfpr, color = statename)) +
+  geom_line(aes(group = statename), size = 1) + # Draws lines for each state across years
+  geom_point(size = 3) + # Adds points for each year's mean data
+  scale_color_viridis_d() + # Applies a discrete color scale suitable for categorical data
+  labs(title = "Trend of Mean Female Labor Force Participation Rate by Year",
+       subtitle = "Comparison between Bihar and Kerala",
+       x = "Year", y = "Mean Female Labor Force Participation Rate",
+       color = "State") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        plot.title = element_text(size = 14, face = "bold"),
+        plot.subtitle = element_text(size = 12),
+        legend.position = "bottom")
 
 
 
