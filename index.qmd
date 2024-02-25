@@ -1,12 +1,17 @@
 ---
 title: "Data Science for Public Policy"
 subtitle: "Assignment 04"
-author: "Meenakshi Alagusundaram - ma2309, Sanya Bahal - sb2063"
+author: 
+  - name: "Meenakshi Alagusundaram"
+    affiliation: "ma2309"
+  - name: "Sanya Bahal"
+    affiliation: "sb2063"
+format: html
 execute:
   warning: false
-format:
-  html:
-    embed-resources: true
+  error: true
+editor: visual
+
 ---
 
 ## Quarto
@@ -21,34 +26,40 @@ When you click the **Render** button a document will be generated that includes 
 
 # Visualization No. 1
 
+
 ```{r}
+library(ggplot2)
+library(dplyr) 
 
-#Plotting effects of poverty rate on economic outcomes 
-state_summary_2014<-data %>%
-  filter(ac_year == 2014) %>%
-  group_by(statecd) %>%
-  summarize(mean_povertyrate = mean(povertyrate, na.rm = TRUE),
-            mean_overallliteracyrate = mean(overallliteracyrate, na.rm = TRUE)) %>%
-  ungroup()  
 
-state_summary_2014$statecd <- as.factor(state_summary_2014$statecd) # Ensure statecd is treated as a factor
+#Plotting educational outcome on poverty rate 
 
-ggplot(state_summary_2014, aes(x = mean_povertyrate, y = mean_overallliteracyrate, color = statecd)) +
-  geom_point(size = 3) + # Adds points for each data point
-  scale_color_viridis_d(guide = guide_legend(override.aes = list(size = 5))) + # Uses a color scale for states
-  labs(title = "State Socio-Economic Status vs. Education Outcomes (2014)",
-       subtitle = "Mean Poverty Rate vs. Mean Overall Literacy Rate by State",
-       x = "Mean Poverty Rate", y = "Mean Overall Literacy Rate",
-       color = "State Code") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),
-        plot.title = element_text(size = 14, face = "bold"),
+  state_summary_2014<-data %>%
+    filter(ac_year == 2014) %>%
+    group_by(statecd) %>%
+    summarize(mean_povertyrate = mean(povertyrate, na.rm = TRUE),
+              mean_overallliteracyrate = mean(overallliteracyrate, na.rm = TRUE))   
+
+  state_summary_2014$statecd <- as.factor(state_summary_2014$statecd) # Ensure statecd is treated as a factor
+
+p<-ggplot(state_summary_2014, aes(x = mean_povertyrate, y = mean_overallliteracyrate, color = statecd)) +
+    geom_point(size = 3) + # Adds points for each data point
+    scale_color_viridis_d(guide = guide_legend(override.aes = list(size = 5))) + # Uses a color scale for states
+    labs(title = "State Socio-Economic Status vs. Education Outcomes (2014)",
+         subtitle = "Mean Poverty Rate vs. Mean Overall Literacy Rate by State",
+         x = "Mean Poverty Rate", y = "Mean Overall Literacy Rate",
+         color = "State Code") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1),
+          plot.title = element_text(size = 14, face = "bold"),
         plot.subtitle = element_text(size = 12),
-        legend.position = "bottom")
+          legend.position = "bottom")
+print(p) 
 
 #The graph above serves as a visual representation of how socio-economic factors, specifically poverty rates, correlate with educational outcomes, as measured by literacy rates. The graph aims to understand how educational outcomes vary according to literacy states in states in India. Each point on the graph represents a state, with its position determined by its poverty rate (horizontal placement) and literacy rate (vertical placement) for the year 2014.States with lower poverty rates tend to have higher literacy rates as compared to states with higher poverty rates. 
+```
 
-
+```{r}
 #Comparing female labor force participation in most rural vs most urban state in India through 2014-2017 
 library(ggplot2)
 library(dplyr)
@@ -98,8 +109,6 @@ The `echo: false` option disables the printing of code (only output is displayed
 library(haven)
 library(tidyverse)
 
-data <- 
-  read_dta("/Users/meenakshialagusundaram/Downloads/dataverse_files/replicate_rbindiaschools_state.dta")
 
 data %>%
   filter(ac_year == 2014) %>% 
