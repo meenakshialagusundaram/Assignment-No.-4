@@ -26,32 +26,21 @@ library(haven)
 library(tidyverse)
 
 data <- 
-  read_dta("C:/Users/sanya/Documents/Assignment-No.-4/dataverse_files/replicate_rbindiaschools_state.dta")
-
-data %>%
-  filter(ac_year == 2014,
-         statename == "Goa",
-         engmed == 1) %>% 
-  ggplot(aes(x = pc_femtch, 
-             y = pcg_p60g8,
-             color = as.factor(ruralsch)))+
-  geom_point(na.rm = TRUE) +
-  geom_smooth(method = "lm",
-              se = FALSE)
+  read_dta("/Users/meenakshialagusundaram/Downloads/dataverse_files/replicate_rbindiaschools_state.dta")
 
 data %>%
   filter(ac_year == 2014) %>% 
   mutate(poor = ifelse(povertyrate > mean(povertyrate), 1, 0)) %>%
   summarize(mean_bjp = mean(bjpvotes_pc_2014ge),
             poor = mean(poor),
-            .by = statecd) %>% 
-  ggplot(aes(x = reorder(statecd, mean_bjp), y = mean_bjp, fill = as.factor(poor))) +
+            .by = statename) %>% 
+  ggplot(aes(x = reorder(statename, mean_bjp), y = mean_bjp, fill = as.factor(poor))) +
   geom_bar(stat = "identity", 
            na.rm = TRUE) +
-  theme_bw()
-
-library(ggplot2)
-library(dplyr)
+  labs(title = "Analysing the the 2014 general elections in India", caption = "Source: Cambridge University Press", x = "Name of the State", y = "Percentage of BJP votes") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8, 
+                                   plot.title = element_text(hjust = 1))) 
 
 #Filtering data for the year 2014 and taking mean of poverty rate and literacy rate for all states 
 state_summary_2014<-data %>%
