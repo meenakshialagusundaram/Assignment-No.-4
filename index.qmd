@@ -14,26 +14,21 @@ editor: visual
 
 ---
 
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+## Gender and the State Politics of Policy Implementation in India 
 
 \[Data Source\] (<https://dataverse.unc.edu/dataset.xhtml?persistentId=doi:10.15139/S3/LW9D7D>)
 
-# Visualization No. 1
+This dataset is part of a study that aims to show how gender representation and local policy implementation interacts with different state environemnt factors, and how this affects education outcomes in India. Through our visualizations, we have attempted to study the correlation between factors pertaining to female labor force participation, female education outcomes, socioeconomic status by analysing poverty rates and Indian general election results.
 
+### Scatterplot to understand how Socio Economic Outcomes affect Education 
 
 ```{r}
 library(ggplot2)
 library(dplyr) 
+library(haven)
 
-
-#Plotting educational outcome on poverty rate 
-
+#Plot
+data <- read_dta("/Users/meenakshialagusundaram/Downloads/dataverse_files/replicate_rbindiaschools_state.dta")
   state_summary_2014<-data %>%
     filter(ac_year == 2014) %>%
     group_by(statecd) %>%
@@ -42,7 +37,7 @@ library(dplyr)
 
   state_summary_2014$statecd <- as.factor(state_summary_2014$statecd) # Ensure statecd is treated as a factor
 
-p<-ggplot(state_summary_2014, aes(x = mean_povertyrate, y = mean_overallliteracyrate, color = statecd)) +
+ggplot(state_summary_2014, aes(x = mean_povertyrate, y = mean_overallliteracyrate, color = statecd)) +
     geom_point(size = 3) + # Adds points for each data point
     scale_color_viridis_d(guide = guide_legend(override.aes = list(size = 5))) + # Uses a color scale for states
     labs(title = "State Socio-Economic Status vs. Education Outcomes (2014)",
@@ -54,10 +49,12 @@ p<-ggplot(state_summary_2014, aes(x = mean_povertyrate, y = mean_overallliteracy
           plot.title = element_text(size = 14, face = "bold"),
         plot.subtitle = element_text(size = 12),
           legend.position = "bottom")
-print(p) 
 
-#The graph above serves as a visual representation of how socio-economic factors, specifically poverty rates, correlate with educational outcomes, as measured by literacy rates. The graph aims to understand how educational outcomes vary according to literacy states in states in India. Each point on the graph represents a state, with its position determined by its poverty rate (horizontal placement) and literacy rate (vertical placement) for the year 2014.States with lower poverty rates tend to have higher literacy rates as compared to states with higher poverty rates. 
 ```
+
+The graph above serves as a visual representation of how socio-economic factors, specifically poverty rates, correlate with educational outcomes, as measured by literacy rates. The graph aims to understand how educational outcomes vary according to literacy states in states in India. Each point on the graph represents a state, with its position determined by its poverty rate (horizontal placement) and literacy rate (vertical placement) for the year 2014.States with lower poverty rates tend to have higher literacy rates as compared to states with higher poverty rates. 
+
+### Line graph comparing female labor force participation in Bihar and Kerala
 
 ```{r}
 #Comparing female labor force participation in most rural vs most urban state in India through 2014-2017 
@@ -83,14 +80,14 @@ ggplot(state_year_summary, aes(x = ac_year, y = mean_femalelfpr, color = statena
        color = "State") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
-        plot.title = element_text(size = 14, face = "bold"),
-        plot.subtitle = element_text(size = 12),
+        plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+        plot.subtitle = element_text(hjust = 0.5, size = 12),
         legend.position = "bottom")
-
-#The graph aims to understand the difference in female labor force participation in the most urban state (Kerala) and most rural state (Bihar)in India over the years 2014-2017. The graph reveals a stark contrast between the two states, with Kerala consistently showing higher female labor force participation (over 30%) rates compared to Bihar (below 5%).However, a limitation of the dataset is the lack of variation in the values through the years for each state, suggesting either a stagnation in female labor force participation rates during this period or a limitation in the dataset's ability to capture year-over-year changes. 
 ```
 
-You can add options to executable code like this
+The graph aims to understand the difference in female labor force participation in the most urban state (Kerala) and most rural state (Bihar)in India over the years 2014-2017. The graph reveals a stark contrast between the two states, with Kerala consistently showing higher female labor force participation (over 30%) rates compared to Bihar (below 5%).However, a limitation of the dataset is the lack of variation in the values through the years for each state, suggesting either a stagnation in female labor force participation rates during this period or a limitation in the dataset's ability to capture year-over-year changes. 
+
+### Density plot depicting female students' grade 8 education outcomes
 
 ```{r}
 data %>%
@@ -102,9 +99,10 @@ data %>%
   
 ```
 
-# This density plot shows the percentage of female students who have scored more than 60% in their grade 8 exams. We are interested in understanding the distribution of these scores since the data also attempts to see what factors affect the improvement of scores in girls such as the percentage of female teachers. This data aims to understand how female literacy and labor force participation is impacted when women are elected into government roles. 
+This density plot shows the percentage of female students who have scored more than 60% in their grade 8 exams. We are interested in understanding the distribution of these scores since the data also attempts to see what factors affect the improvement of scores in girls such as the percentage of female teachers. This data aims to understand how female literacy and labor force participation is impacted when women are elected into government roles. 
 
-The `echo: false` option disables the printing of code (only output is displayed).
+### Column graph to understand the correlation between the 2014 general elections in India and poverty
+
 ```{r}
 library(haven)
 library(tidyverse)
@@ -131,4 +129,4 @@ data %>%
         plot.title = element_text(hjust = 0.5, face = "bold"))
 ```
 
-# In the 2014 general elections in India, the Baratiya Janata Party (BJP) which won the elections ran a campaign with the idea of development of poor states. This graph tries to analyse the correlation between the poverty rate of the 28 states and the percentage of BJP votes in each state. The teal colored columns show states below the mean poverty rate, and the salmon colored columns show states above the mean poverty rate. The states are reordered to analyze those with the lowest vote percentage for BJP and those with the BJP. Even though it was expected that several more salmon colored columns would be towards the right side of the distribution, the data presents a different story. 
+In the 2014 general elections in India, the Baratiya Janata Party (BJP) which won the elections ran a campaign with the idea of development of poor states. This graph tries to analyse the correlation between the poverty rate of the 28 states and the percentage of BJP votes in each state. The teal colored columns show states below the mean poverty rate, and the salmon colored columns show states above the mean poverty rate. The states are reordered to analyze those with the lowest vote percentage for BJP and those with the BJP. Even though it was expected that several more salmon colored columns would be towards the right side of the distribution, the data presents a different story. 
