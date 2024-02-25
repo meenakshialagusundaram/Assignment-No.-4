@@ -23,7 +23,7 @@ When you click the **Render** button a document will be generated that includes 
 
 ```{r}
 
-#Filtering data for the year 2014 and taking mean of poverty rate and literacy rate for all states 
+#Plotting effects of poverty rate on economic outcomes 
 state_summary_2014<-data %>%
   filter(ac_year == 2014) %>%
   group_by(statecd) %>%
@@ -33,7 +33,6 @@ state_summary_2014<-data %>%
 
 state_summary_2014$statecd <- as.factor(state_summary_2014$statecd) # Ensure statecd is treated as a factor
 
-#Plotting effects of poverty rate on economic outcomes 
 ggplot(state_summary_2014, aes(x = mean_povertyrate, y = mean_overallliteracyrate, color = statecd)) +
   geom_point(size = 3) + # Adds points for each data point
   scale_color_viridis_d(guide = guide_legend(override.aes = list(size = 5))) + # Uses a color scale for states
@@ -47,7 +46,10 @@ ggplot(state_summary_2014, aes(x = mean_povertyrate, y = mean_overallliteracyrat
         plot.subtitle = element_text(size = 12),
         legend.position = "bottom")
 
-#Comparing poverty effect on female labor force participation in most rural vs most urban state in India through 2014-2017 
+#The graph above serves as a visual representation of how socio-economic factors, specifically poverty rates, correlate with educational outcomes, as measured by literacy rates. The graph aims to understand how educational outcomes vary according to literacy states in states in India. Each point on the graph represents a state, with its position determined by its poverty rate (horizontal placement) and literacy rate (vertical placement) for the year 2014.States with lower poverty rates tend to have higher literacy rates as compared to states with higher poverty rates. 
+
+
+#Comparing female labor force participation in most rural vs most urban state in India through 2014-2017 
 library(ggplot2)
 library(dplyr)
 
@@ -58,8 +60,7 @@ state_year_summary <-
   summarize(mean_femalelfpr = mean(femalelfpr, na.rm = TRUE)) %>%
   ungroup()
 
-state_year_summary$statecd <- 
-  as.factor(state_year_summary$statecd) 
+state_year_summary$statename <- as.factor(state_year_summary$statename) 
 
 ggplot(state_year_summary, aes(x = ac_year, y = mean_femalelfpr, color = statename)) +
   geom_line(aes(group = statename), size = 1) + # Draws lines for each state across years
@@ -75,6 +76,7 @@ ggplot(state_year_summary, aes(x = ac_year, y = mean_femalelfpr, color = statena
         plot.subtitle = element_text(size = 12),
         legend.position = "bottom")
 
+#The graph aims to understand the difference in female labor force participation in the most urban state (Kerala) and most rural state (Bihar)in India over the years 2014-2017. The graph reveals a stark contrast between the two states, with Kerala consistently showing higher female labor force participation (over 30%) rates compared to Bihar (below 5%).However, a limitation of the dataset is the lack of variation in the values through the years for each state, suggesting either a stagnation in female labor force participation rates during this period or a limitation in the dataset's ability to capture year-over-year changes. 
 ```
 
 You can add options to executable code like this
