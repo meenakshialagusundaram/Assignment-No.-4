@@ -22,25 +22,6 @@ When you click the **Render** button a document will be generated that includes 
 # Visualization No. 1
 
 ```{r}
-library(haven)
-library(tidyverse)
-
-data <- 
-  read_dta("/Users/meenakshialagusundaram/Downloads/dataverse_files/replicate_rbindiaschools_state.dta")
-
-data %>%
-  filter(ac_year == 2014) %>% 
-  mutate(poor = ifelse(povertyrate > mean(povertyrate), 1, 0)) %>%
-  summarize(mean_bjp = mean(bjpvotes_pc_2014ge),
-            poor = mean(poor),
-            .by = statename) %>% 
-  ggplot(aes(x = reorder(statename, mean_bjp), y = mean_bjp, fill = as.factor(poor))) +
-  geom_bar(stat = "identity", 
-           na.rm = TRUE) +
-  labs(title = "Analysing the the 2014 general elections in India", caption = "Source: Cambridge University Press", x = "Name of the State", y = "Percentage of BJP votes") +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8, 
-                                   plot.title = element_text(hjust = 1))) 
 
 #Filtering data for the year 2014 and taking mean of poverty rate and literacy rate for all states 
 state_summary_2014<-data %>%
@@ -70,13 +51,15 @@ ggplot(state_summary_2014, aes(x = mean_povertyrate, y = mean_overallliteracyrat
 library(ggplot2)
 library(dplyr)
 
-state_year_summary <- data %>%
+state_year_summary <- 
+  data %>%
   filter(statename %in% c("Bihar", "Kerala")) %>%
   group_by(statename, ac_year) %>%
   summarize(mean_femalelfpr = mean(femalelfpr, na.rm = TRUE)) %>%
   ungroup()
 
-state_year_summary$statecd <- as.factor(state_year_summary$statecd)
+state_year_summary$statecd <- 
+  as.factor(state_year_summary$statecd) 
 
 ggplot(state_year_summary, aes(x = ac_year, y = mean_femalelfpr, color = statename)) +
   geom_line(aes(group = statename), size = 1) + # Draws lines for each state across years
@@ -92,15 +75,49 @@ ggplot(state_year_summary, aes(x = ac_year, y = mean_femalelfpr, color = statena
         plot.subtitle = element_text(size = 12),
         legend.position = "bottom")
 
-
-
 ```
 
 You can add options to executable code like this
 
 ```{r}
-#| echo: false
-2 * 2
+data %>%
+  ggplot(aes(x = pcg_p60g8)) +
+  geom_density(na.rm = TRUE, fill = "light green", alpha = 0.5) + 
+  theme_classic() +
+  labs(x = "Percentage of scores", title = "Percentage of grade 8 female students scoring 60% and above") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+  
 ```
 
+# This density plot shows the percentage of female students who have scored more than 60% in their grade 8 exams. We are interested in understanding the distribution of these scores since the data also attempts to see what factors affect the improvement of scores in girls such as the percentage of female teachers. This data aims to understand how female literacy and labor force participation is impacted when women are elected into government roles. 
+
 The `echo: false` option disables the printing of code (only output is displayed).
+```{r}
+library(haven)
+library(tidyverse)
+
+data <- 
+  read_dta("/Users/meenakshialagusundaram/Downloads/dataverse_files/replicate_rbindiaschools_state.dta")
+
+data %>%
+  filter(ac_year == 2014) %>% 
+  mutate(poor = ifelse(povertyrate > mean(povertyrate), 1, 0)) %>%
+  summarize(mean_bjp = mean(bjpvotes_pc_2014ge),
+            poor = mean(poor),
+            .by = statename) %>% 
+  ggplot(aes(x = reorder(statename, mean_bjp), y = mean_bjp, fill = as.factor(poor))) +
+  geom_bar(stat = "identity", 
+           na.rm = TRUE) +
+  labs(title = "Analysing the the 2014 general elections in India", 
+       caption = "Source: Cambridge University Press", 
+       x = "Name of the State", 
+       y = "Percentage of BJP votes") +
+  scale_fill_manual(values = c("Cyan3", "Salmon"),
+                    name = "Poverty Status",
+                    labels = c("Not Poor", "Poor")) + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8), 
+        plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+
+# In the 2014 general elections in India, the Baratiya Janata Party (BJP) which won the elections ran a campaign with the idea of development of poor states. This graph tries to analyse the correlation between the poverty rate of the 28 states and the percentage of BJP votes in each state. The teal colored columns show states below the mean poverty rate, and the salmon colored columns show states above the mean poverty rate. The states are reordered to analyze those with the lowest vote percentage for BJP and those with the BJP. Even though it was expected that several more salmon colored columns would be towards the right side of the distribution, the data presents a different story. 
